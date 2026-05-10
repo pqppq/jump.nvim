@@ -18,18 +18,18 @@ local function distance(target, cursor)
   return math.abs(target.lnum - cursor[1]) + math.abs(target.col - cursor[2])
 end
 
--- Return a list of { index, score } pairs sorted by ascending Manhattan distance
--- from the cursor. This indirect index is passed to the label-assignment step so
--- that targets closest to the cursor receive the shortest (easiest) labels.
+-- Return a new list of targets sorted by ascending Manhattan distance from the
+-- cursor. Targets closest to the cursor appear first and will receive the
+-- shortest (easiest) labels in the assignment step.
 function M.sort_by_distance(targets, cursor)
-  local indirect = {}
-  for i, t in ipairs(targets) do
-    indirect[i] = { index = i, score = distance(t, cursor) }
+  local sorted = {}
+  for _, t in ipairs(targets) do
+    sorted[#sorted + 1] = t
   end
-  table.sort(indirect, function(a, b)
-    return a.score < b.score
+  table.sort(sorted, function(a, b)
+    return distance(a, cursor) < distance(b, cursor)
   end)
-  return indirect
+  return sorted
 end
 
 -- Generator: one target per visible line at column 0.
