@@ -7,7 +7,7 @@
 return {
   -- Characters used for labels. Home-row keys are placed first so that
   -- targets near the cursor tend to receive shorter labels.
-  keys = 'asd' + 'gh' + 'kl' + 'qwertyuiop' + 'zxcvbnm' + 'fj',
+  keys = 'asd' .. 'gh' .. 'kl' .. 'qwertyuiop' .. 'zxcvbnm' .. 'fj',
 
   -- Key that cancels the jump session.
   quit_key = '<Esc>',
