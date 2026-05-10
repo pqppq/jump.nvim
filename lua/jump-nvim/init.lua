@@ -29,21 +29,18 @@ function M.setup(opts)
 
   -- Register highlight groups.
   local highlight = require('jump-nvim.highlight')
-  highlight.apply()
 
-  -- Optionally re-register highlights when the colorscheme changes.
+  -- Re-register highlights whenever the colorscheme changes at runtime.
   if M.opts.create_hl_autocmd then
     highlight.watch_colorscheme()
   end
-end
 
--- Ensure highlight groups exist. They may have been cleared by a colorscheme
--- change that our autocmd missed (e.g. lazy-loading timing issues).
-local function ensure_highlights()
-  local hl = vim.api.nvim_get_hl(0, { name = 'JumpNextKey' })
-  if not hl.fg then
-    require('jump-nvim.highlight').apply()
-  end
+  -- Defer initial highlight registration to run after the current event
+  -- loop completes. This ensures highlights are applied after any pending
+  -- colorscheme initialization, regardless of plugin load order.
+  vim.schedule(function()
+    highlight.apply()
+  end)
 end
 
 -- Wire up the full pipeline from window context to sorted jump targets.
@@ -62,8 +59,6 @@ end
 -- Jump to the start of any visible line.
 -- Will be wired to the input loop in Step 7.
 function M.jump_lines(opts)
-  ensure_highlights()
-
   opts = resolve_opts(opts)
   local jump_target = require('jump-nvim.jump_target')
   local label = require('jump-nvim.label')
