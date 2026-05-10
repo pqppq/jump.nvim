@@ -23,7 +23,8 @@ end
 --   })
 function M.setup(opts)
   -- Merge user options on top of defaults and persist them.
-  M.opts = setmetatable(opts or {}, { __index = require('jump-nvim.defaults') })
+  local default_ops = require('jump-nvim.defaults')
+  M.opts = setmetatable(opts or {}, { __index = default_ops })
   M.initialized = true
 
   -- Register highlight groups.
