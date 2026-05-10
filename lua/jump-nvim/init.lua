@@ -74,7 +74,7 @@ local function jump_to(targets, ctx, opts)
     return
   end
 
-  local hints = label.assign(targets, opts.keys)
+  local hints = label.assign_directional(targets, ctx.cursor[1], opts.keys)
   local lines = window.visible_lines(ctx)
 
   hint.dim(ctx.buf, lines)
