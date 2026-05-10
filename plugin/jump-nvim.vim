@@ -17,5 +17,8 @@ endif
 
 " ---- Commands ----
 
+" Jump to the start of any visible line.
+command! JumpLine lua require('jump-nvim').jump_lines()
+
 " Jump to word starts (full implementation coming in Step 8).
 command! JumpWord lua require('jump-nvim').jump_words()
