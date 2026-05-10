@@ -37,6 +37,15 @@ function M.setup(opts)
   end
 end
 
+-- Ensure highlight groups exist. They may have been cleared by a colorscheme
+-- change that our autocmd missed (e.g. lazy-loading timing issues).
+local function ensure_highlights()
+  local hl = vim.api.nvim_get_hl(0, { name = 'JumpNextKey' })
+  if not hl.fg then
+    require('jump-nvim.highlight').apply()
+  end
+end
+
 -- Wire up the full pipeline from window context to sorted jump targets.
 -- Returns targets sorted by distance from cursor, and the window context.
 local function collect(generator, opts)
