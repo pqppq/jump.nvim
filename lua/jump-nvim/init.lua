@@ -130,24 +130,18 @@ function M.jump_lines(opts)
   jump_to(targets, ctx, opts)
 end
 
--- Placeholder called by :JumpWord.
--- Will be replaced with the real implementation in Steps 4-7.
+-- Jump to the start of any word on visible lines.
 function M.jump_words(opts)
   opts = resolve_opts(opts)
+  local window = require('jump-nvim.window')
+  local jump_target = require('jump-nvim.jump_target')
 
-  if not M.initialized then
-    vim.notify(
-      '[jump-nvim] setup() has not been called. Add require("jump-nvim").setup() to your init.lua.',
-      vim.log.levels.ERROR
-    )
-    return
-  end
+  local ctx = window.context()
+  local lines = window.visible_lines(ctx)
+  local targets =
+    jump_target.sort_by_distance(jump_target.get_word_start_targets(ctx, lines), ctx.cursor)
 
-  -- TODO: Step 4 - collect jump targets from visible lines
-  -- TODO: Step 5 - assign labels to targets
-  -- TODO: Step 6 - render dimming and label extmarks
-  -- TODO: Step 7 - key input loop and cursor movement
-  vim.notify('[jump-nvim] jump_words: not yet implemented (Steps 4-7).', vim.log.levels.INFO)
+  jump_to(targets, ctx, opts)
 end
 
 return M
