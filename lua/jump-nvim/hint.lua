@@ -12,6 +12,11 @@ local M = {}
 -- Single namespace shared by all extmarks placed during a jump session.
 M.ns = vim.api.nvim_create_namespace('jump-nvim')
 
+-- Priority high enough to override any other plugin's extmarks (e.g. hlchunk.nvim).
+-- During a jump session our labels must always be on top.
+local PRIORITY_DIM = 65534
+local PRIORITY_LABEL = 65535
+
 -- Dim all visible lines by covering them with the JumpUnmatched highlight.
 -- Lines that are folded (text == '') are skipped.
 function M.dim(buf, lines)
@@ -21,7 +26,7 @@ function M.dim(buf, lines)
         end_col = #line.text,
         hl_group = 'JumpUnmatched',
         hl_eol = true, -- dim the area after the last character too
-        priority = 10,
+        priority = PRIORITY_DIM,
       })
     end
   end
@@ -50,7 +55,7 @@ function M.render(hints, opts)
     vim.api.nvim_buf_set_extmark(t.buf, M.ns, t.lnum, t.col, {
       virt_text = label_virt_text(h.label, opts.uppercase_labels),
       virt_text_pos = 'overlay',
-      priority = 20, -- above the dim layer
+      priority = PRIORITY_LABEL,
     })
   end
 end
