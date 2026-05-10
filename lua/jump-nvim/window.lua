@@ -17,19 +17,19 @@ local M = {}
 --     bot    = <last  visible line, 0-indexed exclusive>,
 --   }
 function M.context()
-  local win    = vim.api.nvim_get_current_win()
-  local buf    = vim.api.nvim_win_get_buf(win)
-  local info   = vim.fn.getwininfo(win)[1]
+  local win = vim.api.nvim_get_current_win()
+  local buf = vim.api.nvim_win_get_buf(win)
+  local info = vim.fn.getwininfo(win)[1]
 
   -- nvim_win_get_cursor returns { 1-indexed row, 0-indexed byte col }
   local cursor = vim.api.nvim_win_get_cursor(win)
 
   return {
-    win    = win,
-    buf    = buf,
-    cursor = { cursor[1] - 1, cursor[2] },  -- normalize row to 0-indexed
-    top    = info.topline - 1,              -- normalize to 0-indexed inclusive
-    bot    = info.botline,                  -- 0-indexed exclusive (== 1-indexed inclusive)
+    win = win,
+    buf = buf,
+    cursor = { cursor[1] - 1, cursor[2] }, -- normalize row to 0-indexed
+    top = info.topline - 1, -- normalize to 0-indexed inclusive
+    bot = info.botline, -- 0-indexed exclusive (== 1-indexed inclusive)
   }
 end
 
@@ -43,7 +43,9 @@ end
 local function iter_lines(ctx)
   local lnum = ctx.top
   return function()
-    if lnum >= ctx.bot then return nil end
+    if lnum >= ctx.bot then
+      return nil
+    end
 
     local fold_end = vim.api.nvim_win_call(ctx.win, function()
       return vim.fn.foldclosedend(lnum + 1)

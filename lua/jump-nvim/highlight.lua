@@ -11,16 +11,22 @@ local M = {}
 -- Called from setup() and re-called whenever the colorscheme changes.
 function M.apply()
   -- Single-char label (immediately confirms a target): pink bold
-  vim.api.nvim_command('highlight default JumpNextKey  guifg=#ff007c gui=bold ctermfg=198 cterm=bold')
+  vim.api.nvim_command(
+    'highlight default JumpNextKey  guifg=#ff007c gui=bold ctermfg=198 cterm=bold'
+  )
 
   -- First char of a two-char label (still narrowing down): cyan bold
-  vim.api.nvim_command('highlight default JumpNextKey1 guifg=#00dfff gui=bold ctermfg=45 cterm=bold')
+  vim.api.nvim_command(
+    'highlight default JumpNextKey1 guifg=#00dfff gui=bold ctermfg=45 cterm=bold'
+  )
 
   -- Second char of a two-char label (the key to press after the prefix): blue
   vim.api.nvim_command('highlight default JumpNextKey2 guifg=#2b8db3 ctermfg=33')
 
   -- Non-target text: dimmed grey
-  vim.api.nvim_command('highlight default JumpUnmatched guifg=#666666 guibg=bg guisp=#666666 ctermfg=242')
+  vim.api.nvim_command(
+    'highlight default JumpUnmatched guifg=#666666 guibg=bg guisp=#666666 ctermfg=242'
+  )
 
   -- Virtual cursor shown while jumping: same appearance as the normal cursor
   vim.api.nvim_command('highlight default link JumpCursor Cursor')

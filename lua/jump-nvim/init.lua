@@ -43,7 +43,10 @@ function M.jump_words(opts)
   opts = resolve_opts(opts)
 
   if not M.initialized then
-    vim.notify('[jump-nvim] setup() has not been called. Add require("jump-nvim").setup() to your init.lua.', vim.log.levels.ERROR)
+    vim.notify(
+      '[jump-nvim] setup() has not been called. Add require("jump-nvim").setup() to your init.lua.',
+      vim.log.levels.ERROR
+    )
     return
   end
 
