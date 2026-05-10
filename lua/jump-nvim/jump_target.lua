@@ -9,22 +9,29 @@
 
 local M = {}
 
--- Compute the Manhattan distance between a target and the cursor.
--- cursor = { row, col }, both 0-indexed.
-local function distance(target, cursor)
-  return math.abs(target.lnum - cursor[1]) + math.abs(target.col - cursor[2])
-end
-
--- Return a new list of targets sorted by ascending Manhattan distance from the
--- cursor. Targets closest to the cursor appear first and will receive the
--- shortest (easiest) labels in the assignment step.
+-- Return a new list of targets sorted by line-first distance from the cursor.
+--
+-- Primary key:   absolute line distance  (|lnum - cursor_row|)
+-- Secondary key: absolute column distance (|col  - cursor_col|)
+--
+-- This groups all targets on the same line together in the sorted output.
+-- Because labels are assigned sequentially, targets on the same line will
+-- naturally share the same prefix key for 2-char labels. This matches how
+-- users navigate: they first identify the target line, press the prefix key
+-- to narrow down to that line, then press the suffix key for the exact
+-- position.
 function M.sort_by_distance(targets, cursor)
   local sorted = {}
   for _, t in ipairs(targets) do
     sorted[#sorted + 1] = t
   end
   table.sort(sorted, function(a, b)
-    return distance(a, cursor) < distance(b, cursor)
+    local a_row = math.abs(a.lnum - cursor[1])
+    local b_row = math.abs(b.lnum - cursor[1])
+    if a_row ~= b_row then
+      return a_row < b_row
+    end
+    return math.abs(a.col - cursor[2]) < math.abs(b.col - cursor[2])
   end)
   return sorted
 end
