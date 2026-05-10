@@ -37,6 +37,34 @@ function M.setup(opts)
   end
 end
 
+-- Wire up the full pipeline from window context to sorted jump targets.
+-- Returns targets sorted by distance from cursor, and the window context.
+local function collect(generator, opts)
+  local window = require('jump-nvim.window')
+  local jump_target = require('jump-nvim.jump_target')
+
+  local ctx = window.context()
+  local lines = window.visible_lines(ctx)
+  local targets = generator(ctx, lines)
+
+  return jump_target.sort_by_distance(targets, ctx.cursor), ctx
+end
+
+-- Jump to the start of any visible line.
+-- Will be wired to rendering and input in Steps 6-7.
+function M.jump_lines(opts)
+  opts = resolve_opts(opts)
+  local jump_target = require('jump-nvim.jump_target')
+  local targets, ctx = collect(jump_target.by_line_start, opts)
+
+  -- TODO: Step 6 - render labels
+  -- TODO: Step 7 - key input loop
+  vim.notify(
+    string.format('[jump-nvim] jump_lines: found %d targets', #targets),
+    vim.log.levels.INFO
+  )
+end
+
 -- Placeholder called by :JumpWord.
 -- Will be replaced with the real implementation in Steps 4-7.
 function M.jump_words(opts)
