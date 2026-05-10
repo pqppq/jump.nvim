@@ -60,16 +60,26 @@ local function collect(generator, opts)
 end
 
 -- Jump to the start of any visible line.
--- Will be wired to rendering and input in Steps 6-7.
+-- Will be wired to the input loop in Step 7.
 function M.jump_lines(opts)
+  ensure_highlights()
+
   opts = resolve_opts(opts)
   local jump_target = require('jump-nvim.jump_target')
-  local targets, ctx = collect(jump_target.by_line_start, opts)
+  local label = require('jump-nvim.label')
+  local hint = require('jump-nvim.hint')
+  local window = require('jump-nvim.window')
 
-  -- TODO: Step 6 - render labels
-  -- TODO: Step 7 - key input loop
+  local targets, ctx = collect(jump_target.by_line_start, opts)
+  local hints = label.assign(targets, opts.keys)
+  local lines = window.visible_lines(ctx)
+
+  hint.dim(ctx.buf, lines)
+  hint.render(hints, opts)
+
+  -- TODO: Step 7 - key input loop and cursor movement
   vim.notify(
-    string.format('[jump-nvim] jump_lines: found %d targets', #targets),
+    string.format('[jump-nvim] jump_lines: rendered %d hints', #hints),
     vim.log.levels.INFO
   )
 end
