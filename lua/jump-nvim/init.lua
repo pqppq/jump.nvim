@@ -43,25 +43,13 @@ function M.setup(opts)
   end)
 end
 
--- Wire up the full pipeline from window context to sorted jump targets.
--- Returns targets sorted by distance from cursor, and the window context.
-local function collect(generator, opts)
-  local window = require('jump-nvim.window')
-  local jump_target = require('jump-nvim.jump_target')
-
-  local ctx = window.context()
-  local lines = window.visible_lines(ctx)
-  local targets = generator(ctx, lines)
-
-  return jump_target.sort_by_distance(targets, ctx.cursor), ctx
-end
-
 -- Move the cursor to a target position.
 local function move_cursor_to(target)
   vim.api.nvim_win_set_cursor(target.win, { target.lnum + 1, target.col })
 end
 
--- Core hint-and-jump loop shared by all jump_xxx() functions.
+-- Display hints for the given targets, wait for key input, and jump.
+-- Shared by all jump_xxx() functions.
 --
 -- 1. If only one target and jump_on_sole_occurrence, jump immediately.
 -- 2. Dim visible lines and render labels.
@@ -70,12 +58,10 @@ end
 --    - A valid key narrows hints via filter_hints.
 --    - When a target is fully resolved, move the cursor there.
 -- 4. Always clean up extmarks before returning.
-local function hint_with(generator, opts)
+local function jump_to(targets, ctx, opts)
   local label = require('jump-nvim.label')
   local hint = require('jump-nvim.hint')
   local window = require('jump-nvim.window')
-
-  local targets, ctx = collect(generator, opts)
 
   -- Nothing to do if there are no targets.
   if #targets == 0 then
@@ -133,8 +119,15 @@ end
 -- Jump to the start of any visible line.
 function M.jump_lines(opts)
   opts = resolve_opts(opts)
+  local window = require('jump-nvim.window')
   local jump_target = require('jump-nvim.jump_target')
-  hint_with(jump_target.by_line_start, opts)
+
+  local ctx = window.context()
+  local lines = window.visible_lines(ctx)
+  local targets =
+    jump_target.sort_by_distance(jump_target.get_line_start_targets(ctx, lines), ctx.cursor)
+
+  jump_to(targets, ctx, opts)
 end
 
 -- Placeholder called by :JumpWord.

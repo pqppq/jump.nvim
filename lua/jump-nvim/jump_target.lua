@@ -4,11 +4,8 @@
 -- A jump target is a table representing a single location the cursor can jump to:
 --   { lnum, col, win, buf }  -- all values are 0-indexed
 --
--- Generator functions follow the signature:
---   generator(ctx, lines) -> targets
--- where ctx is the window context from window.lua and lines is the result of
--- window.visible_lines(). Additional generators (word, char, pattern, ...) will
--- be added in later steps.
+-- get_xxx_targets(ctx, lines) functions return a list of targets.
+-- Additional target types (word, char, pattern, ...) will be added in later steps.
 
 local M = {}
 
@@ -32,9 +29,8 @@ function M.sort_by_distance(targets, cursor)
   return sorted
 end
 
--- Generator: one target per visible line at column 0.
--- Used by :JumpLine.
-function M.by_line_start(ctx, lines)
+-- Return one target per visible line at column 0.
+function M.get_line_start_targets(ctx, lines)
   local targets = {}
   for _, line in ipairs(lines) do
     targets[#targets + 1] = {
