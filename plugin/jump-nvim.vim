@@ -1,12 +1,21 @@
-" Prevents the plugin from being loaded multiple times. If the loaded
-" variable exists, do nothing more. Otherwise, assign the loaded
-" variable and continue running this instance of the plugin.
-if exists("g:jump_nvim_loaded")
-    finish
-endif
-let g:jump_nvim_loaded= 1
+" jump-nvim.vim
+" Plugin entry point. Defines user-facing commands.
 
-" Defines a package path for Lua. This facilitates importing the
-" Lua modules from the plugin's dependency directory.
-let s:lua_rocks_deps_loc =  expand("<sfile>:h:r") . "/../lua/jump-nvim/deps"
-exe "lua package.path = package.path .. ';" . s:lua_rocks_deps_loc . "/lua-?/init.lua'"
+" Prevent loading the plugin more than once.
+if exists('g:jump_nvim_loaded')
+  finish
+endif
+let g:jump_nvim_loaded = 1
+
+" Require Neovim 0.5.0 or later.
+if !has('nvim-0.5.0')
+  echohl Error
+  echom '[jump-nvim] Neovim >= 0.5.0 is required.'
+  echohl clear
+  finish
+endif
+
+" ---- Commands ----
+
+" Jump to word starts (full implementation coming in Step 8).
+command! JumpWord lua require('jump-nvim').jump_words()
