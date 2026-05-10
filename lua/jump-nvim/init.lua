@@ -144,4 +144,28 @@ function M.jump_words(opts)
   jump_to(targets, ctx, opts)
 end
 
+-- Jump to the start of any word on the current line.
+function M.jump_words_current_line(opts)
+  opts = resolve_opts(opts)
+  local window = require('jump-nvim.window')
+  local jump_target = require('jump-nvim.jump_target')
+
+  local ctx = window.context()
+  local lines = window.visible_lines(ctx)
+
+  -- Keep only the line the cursor is on.
+  local current = {}
+  for _, line in ipairs(lines) do
+    if line.lnum == ctx.cursor[1] then
+      current[1] = line
+      break
+    end
+  end
+
+  local targets =
+    jump_target.sort_by_distance(jump_target.get_word_start_targets(ctx, current), ctx.cursor)
+
+  jump_to(targets, ctx, opts)
+end
+
 return M

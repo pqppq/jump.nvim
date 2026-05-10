@@ -22,3 +22,6 @@ command! JumpLine lua require('jump-nvim').jump_lines()
 
 " Jump to word starts (full implementation coming in Step 8).
 command! JumpWord lua require('jump-nvim').jump_words()
+
+" Jump to word starts on the current line.
+command! JumpWordCurrentLine lua require('jump-nvim').jump_words_current_line()
