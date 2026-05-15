@@ -35,12 +35,7 @@ function M.setup(opts)
     highlight.watch_colorscheme()
   end
 
-  -- Defer initial highlight registration to run after the current event
-  -- loop completes. This ensures highlights are applied after any pending
-  -- colorscheme initialization, regardless of plugin load order.
-  vim.schedule(function()
-    highlight.apply()
-  end)
+  highlight.apply()
 end
 
 -- Move the cursor to a target position.
