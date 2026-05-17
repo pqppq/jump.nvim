@@ -31,10 +31,7 @@ function M.setup(opts)
   local highlight = require('jump-nvim.highlight')
 
   -- Re-register highlights whenever the colorscheme changes at runtime.
-  if M.opts.create_hl_autocmd then
-    highlight.watch_colorscheme()
-  end
-
+  highlight.watch_colorscheme()
   highlight.apply()
 end
 
@@ -64,7 +61,7 @@ local function jump_to(targets, ctx, opts)
   end
 
   -- Jump immediately when there is only one target.
-  if #targets == 1 and opts.jump_on_sole_occurrence then
+  if #targets == 1 then
     move_cursor_to(targets[1])
     return
   end

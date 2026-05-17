@@ -36,14 +36,10 @@ Default values:
 
 ```lua
 require("jump-nvim").setup({
-  -- Characters used for labels (home-row first)
-  keys = "asdghklqwertyuiopzxcvbnmfj",
   -- Key to cancel the jump session
   quit_key = "<Esc>",
-  -- Jump immediately if there is only one target
-  jump_on_sole_occurrence = true,
-  -- Re-register highlights on ColorScheme changes
-  create_hl_autocmd = true,
+  -- Characters used for labels (home-row first)
+  keys = "asdghklqwertyuiopzxcvbnmfj",
   -- Render labels in uppercase
   uppercase_labels = false,
 })
